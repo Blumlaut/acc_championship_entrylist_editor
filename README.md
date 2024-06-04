@@ -1,5 +1,7 @@
 # acc_championship_entrylist_editor
 
+A simple entry list editor for ACCs Championship mode, allows adding/removing/editing cars, loading custom car.json files (for custom liveries) and adding/removing AI Drivers from cars.
+
 ## Project setup
 ```
 npm install
@@ -19,6 +21,3 @@ npm run build
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
