@@ -26,6 +26,8 @@
                 <h2>Edit Driver Info</h2>
                 <div v-for="(driver, dIndex) in jsonData.cars[selectedCar].drivers" :key="dIndex" class="driver-info">
                     <h3>Driver {{ dIndex + 1 }}</h3>
+                    <button v-if="dIndex == 0" @click="addNewDriver(selectedCar)">Add Driver</button>
+                    <button v-if="dIndex > 0" @click="removeDriver(selectedCar, dIndex)">Remove Driver</button>
                     <div v-for="(dValue, dKey) in driver.info" :key="dKey" class="input-group">
                         <label :for="dKey">{{ dKey }}:</label>
                         <input :id="dKey" type="text" v-model="driver.info[dKey]" />
@@ -124,11 +126,21 @@ export default {
         addNewCar() {
             const newCar = JSON.parse(JSON.stringify(this.jsonData.cars[this.selectedCar]));
             this.jsonData.cars.push(newCar);
-}       ,
+        }       ,
         deleteCar() {
             if (this.selectedCar !== null) {
                 this.jsonData.cars.splice(this.selectedCar, 1);
                 this.selectedCar = this.jsonData.cars.length > 0 ? 0 : null;
+            }
+        },
+        addNewDriver(carIndex) {
+            const newDriver = JSON.parse(JSON.stringify(this.jsonData.cars[this.selectedCar].drivers[0]));
+            this.jsonData.cars[carIndex].drivers.push(newDriver);
+        },
+        removeDriver(carIndex, driverIndex) {
+            // Only remove additional drivers (not the first one)
+            if (driverIndex > 0) {
+                this.jsonData.cars[carIndex].drivers.splice(driverIndex, 1);
             }
         },
         downloadJson() {
