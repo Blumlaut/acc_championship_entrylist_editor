@@ -53,32 +53,17 @@ export default {
         },
     },
     methods: {
-        isUTF8(string) {
-            for (let i = 0; i < string.length; i++) {
-                if (string.charCodeAt(i) > 127) {
-                    return true;
-                }
-            }
-            return false;
-        },
-        decodeUTF16LE( binaryStr ) {
-            var cp = [];
-            for( var i = 0; i < binaryStr.length; i+=2) {
-                cp.push( 
-                binaryStr.charCodeAt(i) |
-                ( binaryStr.charCodeAt(i+1) << 8 )
-                );
-            }
-            return String.fromCharCode.apply( String, cp );
+        utf16ToText(s) {
+            return s.replace(/\\u[0-9a-fA-F]{4}/gi, match => {
+                return String.fromCharCode(parseInt(match.replace(/\\u/g, ""), 16));
+            });
         },
         onFileChange(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                var jsonstring=e.target.result
-                if (!this.isUTF8(e.target.result)) {
-                    jsonstring = this.decodeUTF16LE(e.target.result)
-                }
+                var jsonstring = this.utf16ToText(e.target.result)
+                console.log(jsonstring)
                 this.jsonData = JSON.parse(jsonstring);
                 this.selectedCar = 0;
                 this.jsonText = JSON.stringify(this.jsonData, null, 2);
@@ -89,10 +74,7 @@ export default {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                var jsonstring=e.target.result
-                if (!this.isUTF8(e.target.result)) {
-                    jsonstring = this.decodeUTF16LE(e.target.result)
-                }
+                var jsonstring = this.utf16ToText(e.target.result)
                 var newCarData = JSON.parse(jsonstring);
                 for (const prop in newCarData) {
                     this.jsonData.cars[this.selectedCar][prop] = newCarData[prop];
