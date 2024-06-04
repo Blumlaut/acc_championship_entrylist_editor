@@ -36,7 +36,7 @@
             </div>
         </div>
         <h3 v-if="jsonData">Raw JSON:</h3>
-        <textarea v-if="jsonData" v-model="jsonText" rows="20" cols="100"></textarea>
+        <textarea readonly v-if="jsonData" v-model="jsonText" rows="20" cols="100"></textarea>
     </div>
 </template>
 
