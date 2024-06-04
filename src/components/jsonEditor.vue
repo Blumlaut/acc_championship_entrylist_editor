@@ -56,7 +56,7 @@ export default {
         isUTF8(string) {
             for (let i = 0; i < string.length; i++) {
                 if (string.charCodeAt(i) > 127) {
-                return true;
+                    return true;
                 }
             }
             return false;
@@ -75,12 +75,28 @@ export default {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
+                var jsonstring=e.target.result
                 if (!this.isUTF8(e.target.result)) {
-                    e.target.result = this.decodeUTF16LE(e.target.result)
+                    jsonstring = this.decodeUTF16LE(e.target.result)
                 }
-                this.jsonData = JSON.parse(e.target.result);
+                this.jsonData = JSON.parse(jsonstring);
                 this.selectedCar = 0;
                 this.jsonText = JSON.stringify(this.jsonData, null, 2);
+            };
+            reader.readAsText(file);
+        },
+        onCarFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                var jsonstring=e.target.result
+                if (!this.isUTF8(e.target.result)) {
+                    jsonstring = this.decodeUTF16LE(e.target.result)
+                }
+                var newCarData = JSON.parse(jsonstring);
+                for (const prop in newCarData) {
+                    this.jsonData.cars[this.selectedCar][prop] = newCarData[prop];
+                }
             };
             reader.readAsText(file);
         },
