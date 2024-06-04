@@ -194,21 +194,19 @@ export default {
 .car-details {
     width: 35%;
     padding-left: 20px;
-    max-width: 80%;
   margin-left: auto;
   margin-right: auto;
 }
 .driver-details {
     width: 35%;
     padding-left: 20px;
-    max-width: 80%;
   margin-left: auto;
   margin-right: auto;
 }
 
 .input-group {
     margin-bottom: 10px;
-    width:85%;
+    width:100%
 }
 
 
