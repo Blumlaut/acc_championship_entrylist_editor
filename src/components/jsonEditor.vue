@@ -122,8 +122,9 @@ export default {
             this.selectedCar = index;
         },
         addNewCar() {
-            this.jsonData.cars = [...this.jsonData.cars, this.jsonData.cars[this.selectedCar]]
-        },
+            const newCar = JSON.parse(JSON.stringify(this.jsonData.cars[this.selectedCar]));
+            this.jsonData.cars.push(newCar);
+}       ,
         deleteCar() {
             if (this.selectedCar !== null) {
                 this.jsonData.cars.splice(this.selectedCar, 1);
