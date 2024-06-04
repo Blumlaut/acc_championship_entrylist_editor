@@ -6,6 +6,7 @@
         <div v-if="jsonData" class="editor-container">
             <div class="car-list">
                 <h2>Cars</h2>
+                <button @click="addNewCar">Add Car</button>
                 <ul>
                     <li v-for="(car, index) in jsonData.cars" :key="index" @click="selectCar(index)" :class="{ 'bold-text': this.selectedCar === index }">
                         {{ car.info.teamName }} - {{ car.info.displayName }} - #{{  car.info.raceNumber }}
@@ -14,6 +15,7 @@
             </div>
             <div class="car-details" v-if="selectedCar !== null">
                 <h2>Edit Car Info</h2>
+                <a>Import from car.json:  </a><input type="file" @change="onCarFile" />
                 <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group">
                     <label :for="key">{{ key }}:</label>
                     <input :id="key" type="text" v-model="jsonData.cars[selectedCar].info[key]" />
@@ -53,6 +55,46 @@ export default {
         },
     },
     methods: {
+        downloadUtf16(str, filename) {
+            
+            // ref: https://stackoverflow.com/q/6226189
+            var charCode, byteArray = [];
+            
+            // BE BOM
+            //byteArray.push(254, 255);
+            
+            // LE BOM
+            byteArray.push(255, 254);
+            
+            for (var i = 0; i < str.length; ++i) {
+                
+                charCode = str.charCodeAt(i);
+                
+                // BE Bytes
+                //byteArray.push((charCode & 0xFF00) >>> 8);
+                //byteArray.push(charCode & 0xFF);
+                
+                // LE Bytes
+                byteArray.push(charCode & 0xff);
+                byteArray.push(charCode / 256 >>> 0);
+            }
+            
+            var blob = new Blob([new Uint8Array(byteArray)], {type:'text/plain;charset=UTF-16LE;'});
+            var blobUrl = URL.createObjectURL(blob);
+            
+            // ref: https://stackoverflow.com/a/18197511
+            var link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            
+            if (document.createEvent) {
+                var event = document.createEvent('MouseEvents');
+                event.initEvent('click', true, true);
+                link.dispatchEvent(event);
+            } else {
+                link.click();
+            }
+        },
         onFileChange(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
@@ -80,15 +122,15 @@ export default {
         selectCar(index) {
             this.selectedCar = index;
         },
-        downloadJson() {
-            const blob = new Blob([this.jsonText], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'championship_entrylist.json';
-            a.click();
-            URL.revokeObjectURL(url);
+        addNewCar() {
+            // copy this.jsonData.cars[this.selectedCar] to end of array
+            this.jsonData.cars = [...this.jsonData.cars, this.jsonData.cars[this.selectedCar]]
+            
         },
+        downloadJson() {
+            this.downloadUtf16(this.jsonText, "championship_entrylist.json")
+        }
+        
     },
 };
 </script>
