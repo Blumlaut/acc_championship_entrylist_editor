@@ -15,5 +15,9 @@ export default {
 </script>
 
 <style>
-/* Add your styles here */
+
+body {
+  max-width: 65% !important
+}
+
 </style>

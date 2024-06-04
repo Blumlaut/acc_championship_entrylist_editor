@@ -1,13 +1,13 @@
 <template>
     <div class="json-editor">
         <h1>ACC Championship Entrylist Editor</h1>
-        <input type="file" @change="onFileChange" />
-        <button @click="downloadJson">Export</button>
+        <input type="file" @change="onFileChange" accept="text/json" />
+        <button v-if="jsonData" @click="downloadJson">Export</button>
         <div v-if="jsonData" class="editor-container">
             <div class="car-list">
                 <h2>Cars</h2>
-                <button @click="addNewCar">Add Car</button>
-                <button @click="deleteCar">Delete Car</button>
+                <button style="margin-right:5px; margin-bottom: 5px;" @click="addNewCar">Add Car</button>  
+                <button style="margin-right:5px; margin-bottom: 5px;background-color: darkred;" @click="deleteCar" >Remove Car</button>
                 <ul>
                     <li v-for="(car, index) in jsonData.cars" :key="index" @click="selectCar(index)" :class="{ 'bold-text': this.selectedCar === index }">
                         {{ car.info.teamName }} - {{ car.info.displayName }} - #{{  car.info.raceNumber }}
@@ -16,7 +16,8 @@
             </div>
             <div class="car-details" v-if="selectedCar !== null">
                 <h2>Edit Car Info</h2>
-                <a>Import from car.json:  </a><input type="file" @change="onCarFile" />
+                <input ref="carjsonUpload" type="file" @change="onCarFile" accept="text/json" hidden/>
+                <button style="margin-right:5px; margin-bottom: 5px;" @click="carjsonUpload()">Import from car.json</button>
                 <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group">
                     <label :for="key">{{ key }}:</label>
                     <input :id="key" type="text" v-model="jsonData.cars[selectedCar].info[key]" />
@@ -26,8 +27,8 @@
                 <h2>Edit Driver Info</h2>
                 <div v-for="(driver, dIndex) in jsonData.cars[selectedCar].drivers" :key="dIndex" class="driver-info">
                     <h3>Driver {{ dIndex + 1 }}</h3>
-                    <button v-if="dIndex == 0" @click="addNewDriver(selectedCar)">Add Driver</button>
-                    <button v-if="dIndex > 0" @click="removeDriver(selectedCar, dIndex)">Remove Driver</button>
+                    <button v-if="dIndex == 0" style="margin-right:5px; margin-bottom: 5px;" @click="addNewDriver(selectedCar)">Add Driver</button>
+                    <button v-if="dIndex > 0" style="margin-right:5px; margin-bottom: 5px;background-color: darkred;" @click="removeDriver(selectedCar, dIndex)">Remove Driver</button>
                     <div v-for="(dValue, dKey) in driver.info" :key="dKey" class="input-group">
                         <label :for="dKey">{{ dKey }}:</label>
                         <input :id="dKey" type="text" v-model="driver.info[dKey]" />
@@ -58,6 +59,9 @@ export default {
         },
     },
     methods: {
+        carjsonUpload() {
+            this.$refs.carjsonUpload.click()
+        },
         downloadUtf16(str, filename) {
             
             // ref: https://stackoverflow.com/q/6226189
@@ -190,10 +194,16 @@ export default {
 .car-details {
     width: 35%;
     padding-left: 20px;
+    max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 .driver-details {
     width: 35%;
     padding-left: 20px;
+    max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .input-group {
