@@ -53,34 +53,29 @@ export default {
         },
     },
     methods: {
-        utf16ToText(s) {
-            return s.replace(/\\u[0-9a-fA-F]{4}/gi, match => {
-                return String.fromCharCode(parseInt(match.replace(/\\u/g, ""), 16));
-            });
-        },
         onFileChange(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                var jsonstring = this.utf16ToText(e.target.result)
+                var jsonstring = e.target.result
                 console.log(jsonstring)
                 this.jsonData = JSON.parse(jsonstring);
                 this.selectedCar = 0;
                 this.jsonText = JSON.stringify(this.jsonData, null, 2);
             };
-            reader.readAsText(file);
+            reader.readAsText(file, "UTF-16LE");
         },
         onCarFile(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                var jsonstring = this.utf16ToText(e.target.result)
+                var jsonstring = e.target.result
                 var newCarData = JSON.parse(jsonstring);
                 for (const prop in newCarData) {
                     this.jsonData.cars[this.selectedCar][prop] = newCarData[prop];
                 }
             };
-            reader.readAsText(file);
+            reader.readAsText(file, "UTF-16LE");
         },
         selectCar(index) {
             this.selectedCar = index;
