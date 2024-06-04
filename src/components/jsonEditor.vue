@@ -7,6 +7,7 @@
             <div class="car-list">
                 <h2>Cars</h2>
                 <button @click="addNewCar">Add Car</button>
+                <button @click="deleteCar">Delete Car</button>
                 <ul>
                     <li v-for="(car, index) in jsonData.cars" :key="index" @click="selectCar(index)" :class="{ 'bold-text': this.selectedCar === index }">
                         {{ car.info.teamName }} - {{ car.info.displayName }} - #{{  car.info.raceNumber }}
@@ -111,11 +112,9 @@ export default {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                var jsonstring = e.target.result
-                var newCarData = JSON.parse(jsonstring);
-                for (const prop in newCarData) {
-                    this.jsonData.cars[this.selectedCar][prop] = newCarData[prop];
-                }
+                const jsonstring = e.target.result;
+                const newCarData = JSON.parse(jsonstring);
+                Object.assign(this.jsonData.cars[this.selectedCar].info, newCarData);
             };
             reader.readAsText(file, "UTF-16LE");
         },
@@ -123,9 +122,13 @@ export default {
             this.selectedCar = index;
         },
         addNewCar() {
-            // copy this.jsonData.cars[this.selectedCar] to end of array
             this.jsonData.cars = [...this.jsonData.cars, this.jsonData.cars[this.selectedCar]]
-            
+        },
+        deleteCar() {
+            if (this.selectedCar !== null) {
+                this.jsonData.cars.splice(this.selectedCar, 1);
+                this.selectedCar = this.jsonData.cars.length > 0 ? 0 : null;
+            }
         },
         downloadJson() {
             this.downloadUtf16(this.jsonText, "championship_entrylist.json")
