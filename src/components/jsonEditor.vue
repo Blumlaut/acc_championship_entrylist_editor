@@ -7,10 +7,12 @@
             <div class="car-list">
                 <h2>Cars</h2>
                 <button style="margin-right:5px; margin-bottom: 5px;" @click="addNewCar">Add Car</button>  
-                <button style="margin-right:5px; margin-bottom: 5px;background-color: darkred;" @click="deleteCar" >Remove Car</button>
+                <button style="margin-right:5px; margin-bottom: 5px;background-color: darkred;" @click="deleteCar">Remove Car</button>
                 <ul>
-                    <li v-for="(car, index) in jsonData.cars" :key="index" @click="selectCar(index)" :class="{ 'bold-text': this.selectedCar === index }">
-                        {{ car.info.teamName }} - {{ car.info.displayName }} - #{{  car.info.raceNumber }}
+                    <li v-for="(car, index) in jsonData.cars" :key="index" @click="selectCar(index)" :class="{ 'bold-text': selectedCar === index }">
+                        #{{ car.info.raceNumber }} {{ car.info.teamName }} <br>
+                        <span class="extra-info">{{ getCarModel(car.info.carModelType).model }}</span> - 
+                        <span class="extra-info">{{ getDriversList(car.drivers) }}</span>
                     </li>
                 </ul>
             </div>
@@ -26,15 +28,15 @@
                         </select>
                     </template>
                     <template v-else-if="key === 'nationality'">
-                            <select :id="key" v-model="jsonData.cars[selectedCar].info[key]">
-                                <option v-for="nationality in nationalitiesArray" :key="nationality.id" :value="nationality.id">{{ nationality.country }}</option>
-                            </select>
-                        </template>
+                        <select :id="key" v-model="jsonData.cars[selectedCar].info[key]">
+                            <option v-for="nationality in nationalitiesArray" :key="nationality.id" :value="nationality.id">{{ nationality.country }}</option>
+                        </select>
+                    </template>
                     <template v-else-if="key === 'cupCategory'">
-                            <select :id="key" v-model="jsonData.cars[selectedCar].info[key]">
-                                <option v-for="category in cupcategoriesArray" :key="category.id" :value="category.id">{{ category.category }}</option>
-                            </select>
-                        </template>
+                        <select :id="key" v-model="jsonData.cars[selectedCar].info[key]">
+                            <option v-for="category in cupcategoriesArray" :key="category.id" :value="category.id">{{ category.category }}</option>
+                        </select>
+                    </template>
                     <template v-else>
                         <input :id="key" type="text" v-model="jsonData.cars[selectedCar].info[key]" />
                     </template>
@@ -65,9 +67,7 @@
     </div>
 </template>
 
-
 <script>
-// eslint-disable-next-line
 import { cars } from '../data/cars.js';
 import { nationalities } from '../data/nationalities.js';
 import { cupcategories } from '../data/cupcategories.js';
@@ -96,7 +96,15 @@ export default {
             },
         },
     },
+    
     methods: {
+        getDriversList(drivers) {
+            if (!drivers) return '';
+            return drivers.map(driver => driver.info.shortName).join(', ');
+        },
+        getCarModel(carModelType) {
+            return this.carsArray.find(car => car.id === carModelType) || {};
+        },
         carjsonUpload() {
             this.$refs.carjsonUpload.click();
         },
@@ -171,10 +179,7 @@ export default {
 };
 </script>
 
-
 <style scoped>
-
-
 .json-editor {
     display: flex;
     flex-direction: column;
@@ -214,6 +219,7 @@ export default {
     margin-left: auto;
     margin-right: auto;
 }
+
 .driver-details {
     width: 35%;
     padding-left: 20px;
@@ -223,9 +229,8 @@ export default {
 
 .input-group {
     margin-bottom: 10px;
-    width:100%
+    width: 100%;
 }
-
 
 .driver-info {
     margin-top: 20px;
@@ -233,5 +238,9 @@ export default {
 
 .bold-text {
     font-weight: bold;
+}
+
+.extra-info {
+    font-size: 12px; /* Adjust the font size as needed */
 }
 </style>
