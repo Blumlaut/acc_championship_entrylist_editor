@@ -20,7 +20,24 @@
                 <button style="margin-right:5px; margin-bottom: 5px;" @click="carjsonUpload()">Import from car.json</button>
                 <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group">
                     <label :for="key">{{ key }}:</label>
-                    <input :id="key" type="text" v-model="jsonData.cars[selectedCar].info[key]" />
+                    <template v-if="key === 'carModelType'">
+                        <select :id="key" v-model="jsonData.cars[selectedCar].info[key]">
+                            <option v-for="car in carsArray" :key="car.id" :value="car.id">{{ car.model }}</option>
+                        </select>
+                    </template>
+                    <template v-else-if="key === 'nationality'">
+                            <select :id="key" v-model="jsonData.cars[selectedCar].info[key]">
+                                <option v-for="nationality in nationalitiesArray" :key="nationality.id" :value="nationality.id">{{ nationality.country }}</option>
+                            </select>
+                        </template>
+                    <template v-else-if="key === 'cupCategory'">
+                            <select :id="key" v-model="jsonData.cars[selectedCar].info[key]">
+                                <option v-for="category in cupcategoriesArray" :key="category.id" :value="category.id">{{ category.category }}</option>
+                            </select>
+                        </template>
+                    <template v-else>
+                        <input :id="key" type="text" v-model="jsonData.cars[selectedCar].info[key]" />
+                    </template>
                 </div>
             </div>
             <div class="driver-details" v-if="selectedCar !== null">
@@ -31,7 +48,14 @@
                     <button v-if="dIndex > 0" style="margin-right:5px; margin-bottom: 5px;background-color: darkred;" @click="removeDriver(selectedCar, dIndex)">Remove Driver</button>
                     <div v-for="(dValue, dKey) in driver.info" :key="dKey" class="input-group">
                         <label :for="dKey">{{ dKey }}:</label>
-                        <input :id="dKey" type="text" v-model="driver.info[dKey]" />
+                        <template v-if="dKey === 'nationality'">
+                            <select :id="dKey" v-model="driver.info[dKey]">
+                                <option v-for="nationality in nationalitiesArray" :key="nationality.id" :value="nationality.id">{{ nationality.country }}</option>
+                            </select>
+                        </template>
+                        <template v-else>
+                            <input :id="dKey" type="text" v-model="driver.info[dKey]" />
+                        </template>
                     </div>
                 </div>
             </div>
@@ -41,14 +65,28 @@
     </div>
 </template>
 
+
 <script>
+// eslint-disable-next-line
+import { cars } from '../data/cars.js';
+import { nationalities } from '../data/nationalities.js';
+import { cupcategories } from '../data/cupcategories.js';
+
 export default {
     data() {
         return {
             jsonData: null,
             selectedCar: null,
             jsonText: '',
+            carsArray: [],
+            nationalitiesArray: [],
+            cupcategoriesArray: []
         };
+    },
+    created() {
+        this.carsArray = Object.values(cars);
+        this.nationalitiesArray = Object.values(nationalities); 
+        this.cupcategoriesArray = Object.values(cupcategories); 
     },
     watch: {
         jsonData: {
@@ -60,40 +98,21 @@ export default {
     },
     methods: {
         carjsonUpload() {
-            this.$refs.carjsonUpload.click()
+            this.$refs.carjsonUpload.click();
         },
         downloadUtf16(str, filename) {
-            
-            // ref: https://stackoverflow.com/q/6226189
             var charCode, byteArray = [];
-            
-            // BE BOM
-            //byteArray.push(254, 255);
-            
-            // LE BOM
-            byteArray.push(255, 254);
-            
+            byteArray.push(255, 254); // LE BOM
             for (var i = 0; i < str.length; ++i) {
-                
                 charCode = str.charCodeAt(i);
-                
-                // BE Bytes
-                //byteArray.push((charCode & 0xFF00) >>> 8);
-                //byteArray.push(charCode & 0xFF);
-                
-                // LE Bytes
                 byteArray.push(charCode & 0xff);
                 byteArray.push(charCode / 256 >>> 0);
             }
-            
             var blob = new Blob([new Uint8Array(byteArray)], {type:'text/plain;charset=UTF-16LE;'});
             var blobUrl = URL.createObjectURL(blob);
-            
-            // ref: https://stackoverflow.com/a/18197511
             var link = document.createElement('a');
             link.href = blobUrl;
             link.download = filename;
-            
             if (document.createEvent) {
                 var event = document.createEvent('MouseEvents');
                 event.initEvent('click', true, true);
@@ -106,8 +125,7 @@ export default {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
-                var jsonstring = e.target.result
-                console.log(jsonstring)
+                var jsonstring = e.target.result;
                 this.jsonData = JSON.parse(jsonstring);
                 this.selectedCar = 0;
                 this.jsonText = JSON.stringify(this.jsonData, null, 2);
@@ -130,7 +148,7 @@ export default {
         addNewCar() {
             const newCar = JSON.parse(JSON.stringify(this.jsonData.cars[this.selectedCar]));
             this.jsonData.cars.push(newCar);
-        }       ,
+        },
         deleteCar() {
             if (this.selectedCar !== null) {
                 this.jsonData.cars.splice(this.selectedCar, 1);
@@ -142,18 +160,17 @@ export default {
             this.jsonData.cars[carIndex].drivers.push(newDriver);
         },
         removeDriver(carIndex, driverIndex) {
-            // Only remove additional drivers (not the first one)
             if (driverIndex > 0) {
                 this.jsonData.cars[carIndex].drivers.splice(driverIndex, 1);
             }
         },
         downloadJson() {
-            this.downloadUtf16(this.jsonText, "championship_entrylist.json")
-        }
-        
+            this.downloadUtf16(this.jsonText, "championship_entrylist.json");
+        },
     },
 };
 </script>
+
 
 <style scoped>
 
@@ -194,14 +211,14 @@ export default {
 .car-details {
     width: 35%;
     padding-left: 20px;
-  margin-left: auto;
-  margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 .driver-details {
     width: 35%;
     padding-left: 20px;
-  margin-left: auto;
-  margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .input-group {
