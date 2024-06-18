@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "deploy": "vite build && git add . && git commit -m 'build' && git push && git subtree push --prefix dist origin gh-pages",
+    "deploy": "vite build --base=/acc_championship_entrylist_editor/ && git add . && git commit -m 'build' && git push && git subtree push --prefix dist origin gh-pages",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {
