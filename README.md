@@ -24,3 +24,10 @@ npm run build
 ```
 npm run lint
 ```
+
+
+
+### Deploy to gh-pages branch
+```
+npm run deploy
+```
