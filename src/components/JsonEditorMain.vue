@@ -49,8 +49,14 @@
               <v-btn v-if="dIndex > 0" @click="removeDriver(selectedCar, dIndex)" style="margin-right:5px; margin-bottom: 5px;" color="error">Remove Driver</v-btn>
               <div v-for="(dValue, dKey) in driver.info" :key="dKey" class="input-group">
                 <v-text-field
-                  v-if="dKey !== 'nationality'"
+                  v-if="dKey !== 'nationality' && dKey !== 'driverCategory'"
                   :label="dKey"
+                  v-model="driver.info[dKey]"
+                />
+                <v-autocomplete
+                  v-else-if="dKey == 'driverCategory'"
+                  :label="dKey"
+                  :items="cupcategoriesArray.map(category => ({ title: category.category, value: category.id }))"
                   v-model="driver.info[dKey]"
                 />
                 <v-autocomplete
