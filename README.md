@@ -2,7 +2,8 @@
 
 A simple entry list editor for ACCs Championship mode, allows adding/removing/editing cars, loading custom car.json files (for custom liveries) and adding/removing AI Drivers from cars.
 
-![image](https://github.com/Blumlaut/acc_championship_entrylist_editor/assets/13604413/a7e85c32-09ea-4c48-94f0-3ea6d0be5848)
+![image](https://github.com/Blumlaut/acc_championship_entrylist_editor/assets/13604413/7877e52c-5858-4a66-81c3-2f54756b1e7e)
+
 
 
 ## Project setup
