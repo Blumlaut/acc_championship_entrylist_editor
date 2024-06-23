@@ -71,7 +71,7 @@ export default {
   for (let key in obj) {
     if (typeof obj[key] === 'object') {
       obj[key] = this.parseIntRecursive(obj[key]);  // Use `this.parseIntRecursive`
-    } else if (typeof obj[key] === 'string' && !isNaN(Number(obj[key]))) { 
+    } else if (typeof obj[key] === 'string' && obj[key] != "" && !isNaN(Number(obj[key]))) { 
       obj[key] = Number(obj[key]);
     }
   }

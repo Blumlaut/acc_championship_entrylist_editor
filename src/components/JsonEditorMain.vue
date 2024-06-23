@@ -9,9 +9,15 @@
             <input ref="carjsonUpload" type="file" @change="onCarFile" accept="text/json" hidden/>
             <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group">
               <v-text-field
-                v-if="key !== 'carModelType' && key !== 'nationality' && key !== 'competitorNationality' && key !== 'cupCategory'"
+                v-if="key !== 'carModelType' && key !== 'nationality' && key !== 'competitorNationality' && key !== 'cupCategory' && key !== 'raceNumber'"
+                :label="key"
+                v-model="jsonData.cars[selectedCar].info[key]"  q
+              />
+              <v-text-field
+                v-else-if="key === 'raceNumber'"
                 :label="key"
                 v-model="jsonData.cars[selectedCar].info[key]"
+                :error-messages="!validateFieldUniqueness(selectedCar, key) ? ['Race number must be unique.'] : []"
               />
               <v-autocomplete
                 v-else-if="key === 'carModelType'"
@@ -86,6 +92,16 @@ export default {
     },
   },
   methods: {
+    validateFieldUniqueness(carIndex, key) {
+      const currentValue = this.jsonData.cars[carIndex].info[key];
+
+      // Check if the current value matches any other car's value for the same key
+      const isUnique = this.jsonData.cars.every((car, index) => {
+        return index === carIndex || car.info[key] != currentValue;
+      });
+
+      return isUnique;
+    },
     carjsonUpload() {
       this.$refs.carjsonUpload.click();
     },
