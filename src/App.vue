@@ -16,8 +16,8 @@
     <v-app-bar app>
       <v-toolbar-title>ACC Championship Entrylist Editor</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class="mdi mdi-download titleBarButton" @click="downloadJson" variant="tonal" v-if="jsonData" color="error">Save Entry List</v-btn>
-      <v-btn class="mdi mdi-upload titleBarButton" @click="loadJson" variant="tonal" color="primary">Load Entry List</v-btn>
+      <v-btn class="mdi mdi-download titleBarButton" @click="downloadJson" variant="tonal" v-if="jsonData" color="primary">Save Entry List</v-btn>
+      <v-btn class="mdi mdi-upload titleBarButton" @click="loadJson" variant="tonal" v-if="!jsonData" color="primary">Load Entry List</v-btn>
       <input type="file" ref="jsonFileInput" @change="onFileChange" accept="text/json" hidden />
     </v-app-bar>
 
