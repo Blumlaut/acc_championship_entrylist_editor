@@ -60,9 +60,7 @@
                   v-model="driver.info[dKey]"
                 />
               </div>
-              <div class="separator">
-
-              </div>
+              <v-divider :thickness="3" class="pa-4"/>
             </div>
           </div>
         </v-col>
@@ -133,11 +131,6 @@ export default {
 
 .extra-info {
   font-size: 12px; /* Adjust the font size as needed */
-}
-
-.separator {
-  border-top: 1px solid grey; /* Adjust thickness and color as needed */
-  margin: 1.5em 0; /* Optional: adjust margin to control spacing */
 }
 
 </style>
