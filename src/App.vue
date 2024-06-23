@@ -114,6 +114,7 @@ export default {
       }
     },
     downloadJson() {
+      this.jsonText = JSON.stringify(this.jsonData, null, 2);
       const byteArray = [];
       byteArray.push(255, 254); // LE BOM
       for (let i = 0; i < this.jsonText.length; ++i) {

@@ -23,13 +23,7 @@
                 v-else-if="key === 'nationality'"
                 :label="key"
                 :items="nationalitiesArray.map(nationality => ({ title: nationality.country, value: nationality.id }))"
-                v-model="jsonData.cars[selectedCar].info[key]"
-              />
-              <v-autocomplete
-                v-else-if="key === 'competitorNationality'"
-                :label="key"
-                :items="nationalitiesArray.map(nationality => ({ title: nationality.country, value: nationality.id }))"
-                v-model="jsonData.cars[selectedCar].info[key]"
+                v-model="syncedNationality"
               />
               <v-autocomplete
                 v-else-if="key === 'cupCategory'"
@@ -78,6 +72,18 @@ export default {
     carsArray: Array,
     nationalitiesArray: Array,
     cupcategoriesArray: Array
+  },
+  computed: {
+    syncedNationality: {
+      get() {
+        return this.jsonData.cars[this.selectedCar].info['nationality'];
+      },
+      set(value) {
+        this.jsonData.cars[this.selectedCar].info['nationality'] = value;
+        this.jsonData.cars[this.selectedCar].info['competitorNationality'] = value;
+        this.$emit('update-json-data', this.jsonData);
+      }
+    },
   },
   methods: {
     carjsonUpload() {
