@@ -9,7 +9,7 @@
             <input ref="carjsonUpload" type="file" @change="onCarFile" accept="text/json" hidden/>
             <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group">
               <v-text-field
-                v-if="key !== 'carModelType' && key !== 'nationality' && key !== 'cupCategory'"
+                v-if="key !== 'carModelType' && key !== 'nationality' && key !== 'competitorNationality' && key !== 'cupCategory'"
                 :label="key"
                 v-model="jsonData.cars[selectedCar].info[key]"
               />
@@ -21,6 +21,12 @@
               />
               <v-autocomplete
                 v-else-if="key === 'nationality'"
+                :label="key"
+                :items="nationalitiesArray.map(nationality => ({ title: nationality.country, value: nationality.id }))"
+                v-model="jsonData.cars[selectedCar].info[key]"
+              />
+              <v-autocomplete
+                v-else-if="key === 'competitorNationality'"
                 :label="key"
                 :items="nationalitiesArray.map(nationality => ({ title: nationality.country, value: nationality.id }))"
                 v-model="jsonData.cars[selectedCar].info[key]"
