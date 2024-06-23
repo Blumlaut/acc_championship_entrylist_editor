@@ -18,10 +18,10 @@
             <span class="extra-info">{{ getDriversList(car.drivers) }}</span>
           </v-list-item-subtitle>
         </v-list-item-content>
-        <v-list-item-action class="copyCar" @click="addNewCar(index)" v-if="hoveredItem === index">
+        <v-list-item-action class="copyCar" @click.stop="addNewCar(index)" v-if="hoveredItem === index">
           <v-icon color="green">mdi-plus</v-icon>
         </v-list-item-action>
-        <v-list-item-action class="deleteCar" @click="confirmDeleteCar(index)" v-if="hoveredItem === index">
+        <v-list-item-action class="deleteCar" @click.stop="confirmDeleteCar(index)" v-if="hoveredItem === index">
           <v-icon color="error">mdi-close</v-icon>
         </v-list-item-action>
       </v-list-item>
