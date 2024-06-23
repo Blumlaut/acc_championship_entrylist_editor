@@ -4,7 +4,7 @@
       <v-row>
         <v-col v-if="selectedCar !== null" cols="6">
           <div class="car-details">
-            <h2>Car Info</h2>
+            <h2>Car Info </h2>
             <v-btn class="mdi mdi-upload" variant="tonal" @click="carjsonUpload" style="margin-right:5px; margin-bottom: 5px;">Import from car.json</v-btn>
             <input ref="carjsonUpload" type="file" @change="onCarFile" accept="text/json" hidden/>
             <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group">
@@ -38,7 +38,7 @@
           <div class="driver-details">
             <h2>Driver Info</h2>
             <div v-for="(driver, dIndex) in jsonData.cars[selectedCar].drivers" :key="dIndex" class="driver-info">
-              <h3>Driver {{ dIndex + 1 }}</h3>
+              <h3>Driver {{ dIndex + 1 }} - {{ driver.info.firstName +" "+ driver.info.lastName }}</h3>
               <v-btn v-if="dIndex == 0" @click="addNewDriver(selectedCar, jsonData.cars[selectedCar].drivers[dIndex])" style="margin-right:5px; margin-bottom: 5px;" variant="tonal" class="mdi mdi-plus">Copy Driver</v-btn>
               <v-btn v-if="dIndex > 0" @click="removeDriver(selectedCar, dIndex)" style="margin-right:5px; margin-bottom: 5px;" color="error">Remove Driver</v-btn>
               <div v-for="(dValue, dKey) in driver.info" :key="dKey" class="input-group">
