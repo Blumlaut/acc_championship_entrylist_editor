@@ -1,18 +1,18 @@
 <template>
-    <v-icon icon="mdi-home" />
+  <v-icon icon="mdi-home" />
   <v-app id="inspire">
     <json-editor-drawer
-      :drawer="drawer"
-      :jsonData="jsonData"
-      :selectedCar="selectedCar"
-      :carsArray="carsArray" 
-      @update:drawer="drawer = $event"
-      @select-car="selectCar"
-      @get-car-model="getCarModel"
-      @add-new-car="addNewCar"
-      @delete-car="deleteCar"
+    :drawer="drawer"
+    :jsonData="jsonData"
+    :selectedCar="selectedCar"
+    :carsArray="carsArray" 
+    @update:drawer="drawer = $event"
+    @select-car="selectCar"
+    @get-car-model="getCarModel"
+    @add-new-car="addNewCar"
+    @delete-car="deleteCar"
     />
-
+    
     <v-app-bar app>
       <v-toolbar-title>ACC Championship Entrylist Editor</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -20,19 +20,19 @@
       <v-btn class="mdi mdi-upload titleBarButton" @click="loadJson" variant="tonal" v-if="!jsonData" color="primary">Load Entry List</v-btn>
       <input type="file" ref="jsonFileInput" @change="onFileChange" accept="text/json" hidden />
     </v-app-bar>
-
+    
     <v-main>
       <json-editor-main
-        :jsonData="jsonData"
-        :selectedCar="selectedCar"
-        :jsonText="jsonText"
-        :carsArray="carsArray"
-        :nationalitiesArray="nationalitiesArray"
-        :cupcategoriesArray="cupcategoriesArray"
-        @load-json="onLoadJson"
-        @add-new-driver="addNewDriver"
-        @remove-driver="removeDriver"
-        @update-json-data="jsonData = $event"
+      :jsonData="jsonData"
+      :selectedCar="selectedCar"
+      :jsonText="jsonText"
+      :carsArray="carsArray"
+      :nationalitiesArray="nationalitiesArray"
+      :cupcategoriesArray="cupcategoriesArray"
+      @load-json="onLoadJson"
+      @add-new-driver="addNewDriver"
+      @remove-driver="removeDriver"
+      @update-json-data="jsonData = $event"
       />
     </v-main>
   </v-app>
@@ -67,6 +67,17 @@ export default {
     this.cupcategoriesArray = Object.values(cupcategories);
   },
   methods: {
+    parseIntRecursive(obj) {
+  for (let key in obj) {
+    if (typeof obj[key] === 'object') {
+      obj[key] = this.parseIntRecursive(obj[key]);  // Use `this.parseIntRecursive`
+    } else if (typeof obj[key] === 'string' && !isNaN(Number(obj[key]))) { 
+      obj[key] = Number(obj[key]);
+    }
+  }
+  return obj;
+},
+
     toggleDrawer() {
       this.drawer = !this.drawer;
     },
@@ -114,6 +125,7 @@ export default {
       }
     },
     downloadJson() {
+      this.jsonData = this.parseIntRecursive(this.jsonData)
       this.jsonText = JSON.stringify(this.jsonData, null, 2);
       const byteArray = [];
       byteArray.push(255, 254); // LE BOM
