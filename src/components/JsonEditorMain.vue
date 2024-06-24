@@ -7,11 +7,12 @@
             <h2>Car Info </h2>
             <v-btn class="mdi mdi-upload" variant="tonal" @click="carjsonUpload" style="margin-right:5px; margin-bottom: 5px;">Import from car.json</v-btn>
             <input ref="carjsonUpload" type="file" @change="onCarFile" accept="text/json" hidden/>
-            <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group">
+            <br>
+            <div v-for="(value, key) in jsonData.cars[selectedCar].info" :key="key" class="input-group" :class="key.startsWith('skin') || key.startsWith('raceNumber') || key.endsWith('Guid') || key.startsWith('auxLight') || key.startsWith('rim') || key.startsWith('sponsor') ? 'inline-group' : ''">
               <v-text-field
                 v-if="key !== 'carModelType' && key !== 'nationality' && key !== 'competitorNationality' && key !== 'cupCategory' && key !== 'raceNumber'"
                 :label="key"
-                v-model="jsonData.cars[selectedCar].info[key]"  q
+                v-model="jsonData.cars[selectedCar].info[key]"
               />
               <v-text-field
                 v-else-if="key === 'raceNumber'"
@@ -46,8 +47,8 @@
             <div v-for="(driver, dIndex) in jsonData.cars[selectedCar].drivers" :key="dIndex" class="driver-info">
               <h3>Driver {{ dIndex + 1 }} - {{ driver.info.firstName +" "+ driver.info.lastName }}</h3>
               <v-btn v-if="dIndex == 0" @click="addNewDriver(selectedCar, jsonData.cars[selectedCar].drivers[dIndex])" style="margin-right:5px; margin-bottom: 5px;" variant="tonal" class="mdi mdi-plus">Copy Driver</v-btn>
-              <v-btn v-if="dIndex > 0" @click="removeDriver(selectedCar, dIndex)" style="margin-right:5px; margin-bottom: 5px;" color="error">Remove Driver</v-btn>
-              <div v-for="(dValue, dKey) in driver.info" :key="dKey" class="input-group">
+              <v-btn v-if="dIndex > 0" @click="removeDriver(selectedCar, dIndex)" style="margin-right:5px; margin-bottom: 5px;" color="error">Remove Driver</v-btn><br>
+              <div v-for="(dValue, dKey) in driver.info" :key="dKey" class="input-group" :class="dKey.startsWith('ai') || dKey.endsWith('Name') || dKey.startsWith('helmet') || dKey.startsWith('gloves') || dKey.startsWith('suit') ? 'inline-group' : ''">
                 <v-text-field
                   v-if="dKey !== 'nationality' && dKey !== 'driverCategory'"
                   :label="dKey"
@@ -74,6 +75,8 @@
     </div>
   </div>
 </template>
+
+
 
 <script>
 export default {
@@ -160,5 +163,13 @@ export default {
 .extra-info {
   font-size: 12px; /* Adjust the font size as needed */
 }
+
+
+.inline-group {
+  display: inline-block;
+  padding-right: 20px;
+  min-width: calc(50%); /* Adjust width as needed */
+}
+
 
 </style>
