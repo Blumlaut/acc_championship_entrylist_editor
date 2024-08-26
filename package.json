@@ -13,7 +13,7 @@
   "dependencies": {
     "@babel/eslint-parser": "^7.25.1",
     "@vitejs/plugin-vue": "^5.1.2",
-    "eslint": "^9.9.0",
+    "eslint": "^9.9.1",
     "vite": "^5.4.2",
     "vue": "^3.4.38",
     "vuetify": "^3.7.0",
