@@ -16,7 +16,7 @@
     "eslint": "^9.9.1",
     "vite": "^5.4.2",
     "vue": "^3.4.38",
-    "vuetify": "^3.7.0",
+    "vuetify": "^3.7.1",
     "ws": "^8.18.0"
   },
   "devDependencies": {
