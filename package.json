@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "eslint-plugin-vue": "^9.27.0"
+    "eslint-plugin-vue": "^9.28.0"
   },
   "eslintConfig": {
     "root": true,
