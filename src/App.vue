@@ -68,15 +68,22 @@ export default {
   },
   methods: {
     parseIntRecursive(obj) {
-  for (let key in obj) {
-    if (typeof obj[key] === 'object') {
-      obj[key] = this.parseIntRecursive(obj[key]);  // Use `this.parseIntRecursive`
-    } else if (typeof obj[key] === 'string' && obj[key] != "" && !isNaN(Number(obj[key]))) { 
-      obj[key] = Number(obj[key]);
-    }
-  }
-  return obj;
-},
+      const globs = [/.*Name$/, /^playerID$/];
+      const shouldKeepString = (key) => globs.some((glob) => new RegExp(glob).test(key));
+
+      for (let key in obj) {
+        if (typeof obj[key] === 'object') {
+          obj[key] = this.parseIntRecursive(obj[key], globs);  // Use `this.parseIntRecursive`
+        } else if (obj[key] !== "" && !isNaN(Number(obj[key]))) {
+          if (shouldKeepString(key)) {
+            obj[key] = String(obj[key]);
+          } else {
+            obj[key] = Number(obj[key]);
+          };
+        };
+      };
+      return obj;
+    },
 
     toggleDrawer() {
       this.drawer = !this.drawer;
