@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "dependencies": {
-    "@babel/eslint-parser": "^7.27.0",
+    "@babel/eslint-parser": "^7.27.1",
     "@vitejs/plugin-vue": "^5.2.3",
     "eslint": "^9.25.1",
     "vite": "^6.3.4",
