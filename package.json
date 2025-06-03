@@ -20,7 +20,7 @@
     "ws": "^8.18.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.1",
+    "@babel/core": "^7.27.4",
     "eslint-plugin-vue": "^10.1.0"
   },
   "eslintConfig": {
