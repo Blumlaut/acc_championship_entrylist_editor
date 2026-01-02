@@ -124,7 +124,8 @@ export default {
       }
     },
     addNewDriver(carIndex, newDriver) {
-      this.jsonData.cars[carIndex].drivers.push(newDriver);
+      const newDriverCopy = JSON.parse(JSON.stringify(newDriver));
+      this.jsonData.cars[carIndex].drivers.push(newDriverCopy);
     },
     removeDriver(carIndex, driverIndex) {
       if (driverIndex > 0) {
