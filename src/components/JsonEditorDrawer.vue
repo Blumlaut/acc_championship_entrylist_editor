@@ -1,6 +1,6 @@
 <template>
-   <v-navigation-drawer v-if="jsonData && jsonData.cars" :value="drawer" app @input="$emit('update:drawer', $event)">
-    <v-list v-if="jsonData && jsonData.cars">
+   <v-navigation-drawer v-if="jsonData" :value="drawer" app @input="$emit('update:drawer', $event)">
+    <v-list v-if="jsonData && jsonData.cars && jsonData.cars.length > 0">
       <v-list-item
         v-for="(car, index) in jsonData.cars"
         :key="index"
@@ -23,6 +23,16 @@
         </v-list-item-action>
         <v-list-item-action class="deleteCar" @click.stop="confirmDeleteCar(index)" v-if="hoveredItem === index">
           <v-icon color="error">mdi-close</v-icon>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+    <v-list v-else>
+      <v-list-item @click="addNewCar(null)">
+        <v-list-item-content>
+          <v-list-item-title>Add a new car</v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-icon color="green">mdi-plus</v-icon>
         </v-list-item-action>
       </v-list-item>
     </v-list>

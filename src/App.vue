@@ -18,6 +18,7 @@
       <v-spacer></v-spacer>
       <v-btn class="mdi mdi-download titleBarButton" @click="downloadJson" variant="tonal" v-if="jsonData" color="primary">Save Entry List</v-btn>
       <v-btn class="mdi mdi-upload titleBarButton" @click="loadJson" variant="tonal" v-if="!jsonData" color="primary">Load Entry List</v-btn>
+      <v-btn class="mdi mdi-plus titleBarButton" @click="addNewCar(null)" variant="tonal" v-if="!jsonData" color="success">Add Blank Car</v-btn>
       <input type="file" ref="jsonFileInput" @change="onFileChange" accept="text/json" hidden />
     </v-app-bar>
     
@@ -113,9 +114,88 @@ export default {
       this.selectedCar = 0;
       this.jsonText = JSON.stringify(this.jsonData, null, 2);
     },
+    createBlankCarEntry() {
+      return {
+        "info": {
+          "carGuid": 0,
+          "teamGuid": 0,
+          "raceNumber": 0,
+          "raceNumberPadding": 0,
+          "auxLightKey": 0,
+          "auxLightColor": 1,
+          "skinTemplateKey": 99,
+          "skinColor1Id": 1,
+          "skinColor2Id": 1,
+          "skinColor3Id": 1,
+          "sponsorId": 0,
+          "skinMaterialType1": 1,
+          "skinMaterialType2": 1,
+          "skinMaterialType3": 1,
+          "rimColor1Id": 1,
+          "rimColor2Id": 1,
+          "rimMaterialType1": 1,
+          "rimMaterialType2": 1,
+          "teamName": "Teamname",
+          "nationality": 0,
+          "displayName": "",
+          "competitorName": "",
+          "competitorNationality": 0,
+          "teamTemplateKey": 0,
+          "carModelType": 36,
+          "cupCategory": 0,
+          "licenseType": 0,
+          "useEnduranceKit": 1,
+          "customSkinName": "",
+          "bannerTemplateKey": 0
+        },
+        "drivers": [
+          {
+            "info": {
+              "firstName": "",
+              "lastName": "",
+              "nickName": "",
+              "shortName": "",
+              "nationality": 0,
+              "driverCategory": 0,
+              "helmetTemplateKey": 500,
+              "helmetBaseColor": 260,
+              "helmetDetailColor": 1,
+              "helmetMaterialType": 5,
+              "helmetGlassColor": 1,
+              "helmetGlassMetallic": 0,
+              "glovesTemplateKey": 13,
+              "suitTemplateKey": 500,
+              "suitDetailColor1": 1,
+              "suitDetailColor2": 1,
+              "playerID": "0",
+              "aiSkill": 0,
+              "aiAggro": 0,
+              "aiRainSkill": 0,
+              "aiConsistency": 0
+            }
+          }
+        ]
+      };
+    },
+
     addNewCar(index) {
-      const newCar = JSON.parse(JSON.stringify(this.jsonData.cars[index]));
-      this.jsonData.cars.push(newCar);
+      if (!this.jsonData) {
+        // Initialize jsonData with blank car entry
+        this.jsonData = {
+          cars: []
+        };
+      }
+      
+      if (!this.jsonData.cars || this.jsonData.cars.length === 0) {
+        // If no cars exist, add a blank entry
+        const newCar = this.createBlankCarEntry();
+        this.jsonData.cars.push(newCar);
+        this.selectedCar = 0;
+      } else {
+        // Copy existing car
+        const newCar = JSON.parse(JSON.stringify(this.jsonData.cars[index]));
+        this.jsonData.cars.push(newCar);
+      }
     },
     deleteCar(index) {
       if (this.selectedCar !== null) {
