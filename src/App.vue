@@ -11,14 +11,15 @@
     @get-car-model="getCarModel"
     @add-new-car="addNewCar"
     @delete-car="deleteCar"
+    @bulk-clone-cars="bulkCloneCars"
+    @bulk-delete-cars="bulkDeleteCars"
     />
     
     <v-app-bar app>
       <v-toolbar-title>ACC Championship Entrylist Editor</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn class="mdi mdi-download titleBarButton" @click="downloadJson" variant="tonal" v-if="jsonData" color="primary">Save Entry List</v-btn>
-      <v-btn class="mdi mdi-upload titleBarButton" @click="loadJson" variant="tonal" v-if="!jsonData" color="primary">Load Entry List</v-btn>
-      <v-btn class="mdi mdi-plus titleBarButton" @click="addNewCar(null)" variant="tonal" v-if="!jsonData" color="success">Add Blank Car</v-btn>
+      <v-btn class="mdi mdi-download titleBarButton" @click="downloadJson" variant="tonal" color="primary">Save Entry List</v-btn>
+      <v-btn class="mdi mdi-upload titleBarButton" @click="loadJson" variant="tonal" color="primary">Load Entry List</v-btn>
       <input type="file" ref="jsonFileInput" @change="onFileChange" accept="text/json" hidden />
     </v-app-bar>
     
@@ -50,7 +51,7 @@ export default {
   data() {
     return {
       drawer: false,
-      jsonData: null,
+      jsonData: { cars: [] },
       selectedCar: null,
       jsonText: '',
       carsArray: [],
@@ -179,22 +180,35 @@ export default {
     },
 
     addNewCar(index) {
-      if (!this.jsonData) {
-        // Initialize jsonData with blank car entry
-        this.jsonData = {
-          cars: []
-        };
-      }
-      
       if (!this.jsonData.cars || this.jsonData.cars.length === 0) {
         // If no cars exist, add a blank entry
         const newCar = this.createBlankCarEntry();
         this.jsonData.cars.push(newCar);
         this.selectedCar = 0;
       } else {
-        // Copy existing car
+        // If index is null, create a blank car entry
+        // Otherwise, copy existing car
+        const newCar = index === null ? this.createBlankCarEntry() : JSON.parse(JSON.stringify(this.jsonData.cars[index]));
+        this.jsonData.cars.push(newCar);
+      }
+    },
+    bulkCloneCars(indices) {
+      // Clone each selected car and add it to the end of the list
+      indices.forEach(index => {
         const newCar = JSON.parse(JSON.stringify(this.jsonData.cars[index]));
         this.jsonData.cars.push(newCar);
+      });
+    },
+    bulkDeleteCars(indices) {
+      // Delete all selected cars, starting from the highest index to avoid shifting issues
+      const sortedIndices = [...indices].sort((a, b) => b - a);
+      sortedIndices.forEach(index => {
+        this.jsonData.cars.splice(index, 1);
+      });
+      
+      // Update selectedCar if it was deleted
+      if (this.selectedCar !== null && indices.includes(this.selectedCar)) {
+        this.selectedCar = this.jsonData.cars.length > 0 ? 0 : null;
       }
     },
     deleteCar(index) {
